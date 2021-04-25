@@ -83,6 +83,12 @@ By default the JFrog CLI version set in [action.yml](https://github.com/jfrog/se
   with:
     version: X.Y.Z
 ```
+Use the latest JFrog CLI version:
+```yml
+- uses: jfrog/setup-jfrog-cli@v1
+  with:
+    version: latest
+```
 | Important: Only JFrog CLI versions 1.29.0 or above are supported. |
 | --- |
 

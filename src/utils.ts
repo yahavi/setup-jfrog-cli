@@ -15,18 +15,21 @@ export class Utils {
     public static readonly MIN_CLI_VERSION: string = '1.29.0';
 
     public static async downloadCli(): Promise<string> {
+        let fileName: string = Utils.getCliExecutableName();
         let version: string = core.getInput(Utils.CLI_VERSION_ARG);
+        if (version.toLowerCase() === 'latest') {
+            return await this.downloadLatestCli(fileName);
+        } 
         if (semver.lt(version, this.MIN_CLI_VERSION)) {
             throw new Error('Requested to download JFrog CLI version ' + version + ' but must be at least ' + this.MIN_CLI_VERSION);
         }
-        let fileName: string = Utils.getCliExecutableName();
         let cliDir: string = toolCache.find(fileName, version);
         if (cliDir) {
             core.addPath(cliDir);
             return path.join(cliDir, fileName);
         }
+        
         let url: string = Utils.getCliUrl(version, fileName);
-        core.debug('Downloading JFrog CLI from ' + url);
         let downloadDir: string = await toolCache.downloadTool(url);
         cliDir = await toolCache.cacheFile(downloadDir, fileName, fileName, version);
         let cliPath: string = path.join(cliDir, fileName);
@@ -111,6 +114,17 @@ export class Utils {
         }
     }
 
+    private static async downloadLatestCli(fileName: string) {
+        let url: string = Utils.getCliUrl('[RELEASE]', fileName);
+        let cliDir: string = await toolCache.downloadTool(url);
+        let cliPath: string = path.join(cliDir, fileName);
+        if (!Utils.isWindows()) {
+            fs.chmodSync(cliPath, 0o555);
+        }
+        core.addPath(cliDir);
+        return cliPath;
+    }
+    
     /**
      * Return true if should use 'jfrog rt c' instead of 'jfrog c'.
      * @returns true if should use 'jfrog rt c' instead of 'jfrog c'.
