@@ -126,6 +126,7 @@ export class Utils {
         const responseString: string = await response.readBody();
         const responseJson: TokenExchangeResponseData = JSON.parse(responseString);
         jfrogCredentials.accessToken = responseJson.access_token;
+        core.info(jfrogCredentials.accessToken)
         if (jfrogCredentials.accessToken) {
             core.setSecret(jfrogCredentials.accessToken);
         }
