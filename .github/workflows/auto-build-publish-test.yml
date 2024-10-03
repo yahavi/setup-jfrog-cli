@@ -40,7 +40,7 @@ jobs:
         with:
           post: |
             jf c add --artifactory-url http://localhost:8081/artifactory --user admin --password password; \
-            count=$(jf rt search "artifactory-build-info/${GITHUB_WORKFLOW}/${GITHUB_RUN_NUMBER}-*" --count 2>stderr.log); \
+            count=$(jf rt search "artifactory-build-info/${REPOSITORY_OWNER}%2F$${GITHUB_REPOSITORY##*/}%2F${GITHUB_RUN_NUMBER}-*" --count 2>stderr.log); \
             exit_code=$?; \
             cat stderr.log; \
             if [ $exit_code -ne 0 ]; then \
@@ -71,7 +71,7 @@ jobs:
             "rclass": "remote",
             "packageType": "npm",
             "url": "https://registry.npmjs.org"
-          }'
+            }'
 
       - name: Configure Artifactory NPM Remote Repository
         run: jf rt repo-create npm-remote-template.json
