@@ -366,7 +366,7 @@ export class Utils {
         );
         Utils.exportVariableIfNotSet('JFROG_CLI_OFFER_CONFIG', 'false');
         Utils.exportVariableIfNotSet('CI', 'true');
-        let buildNameEnv: string | undefined = process.env.GITHUB_WORKFLOW;
+        let buildNameEnv: string | undefined = process.env.GITHUB_REPOSITORY + '/' + process.env.GITHUB_WORKFLOW;
         if (buildNameEnv) {
             Utils.exportVariableIfNotSet('JFROG_CLI_BUILD_NAME', buildNameEnv);
         }
